@@ -9,15 +9,50 @@ services:
     dockerContext: .
     plan: free
     envVars:
+      # MongoDB Connection
       - key: MONGODB_URI
         value: mongodb+srv://sambathsora_db_user:Bath2709@sora.ofemqen.mongodb.net/library?retryWrites=true&w=majority&appName=sora
       - key: MONGODB_DB_NAME
         value: library
+      
+      # Authentication - Using your new generated secrets!
       - key: NEXTAUTH_SECRET
-        value: a247aaca1a604f4f45e7f3a98dc8c9c14ccc99bec208f7da3cab5976582bb510
+        value: 8cd52ec7f71f7a93ae29e511c5747c4c6bbc882f13ed7a2b921a6d39ebbc3b71
       - key: NEXTAUTH_URL
         value: https://library-management-system.onrender.com
+      - key: JWT_SECRET
+        value: 7fb571ee39fb86130debd734f98a1595ae746db06180179d06badd3dfa2d785ce49791012dbc9836593225609640c6e30de9aa837fc2c3552eb7faee285e74bf
+      
+      # Environment
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 3000
+      - key: HOST
+        value: 0.0.0.0
+      
+      # Security
+      - key: BCRYPT_SALT_ROUNDS
+        value: "10"
+      - key: CORS_ORIGIN
+        value: https://library-management-system.onrender.com
+      
+      # URLs
+      - key: NEXT_PUBLIC_API_URL
+        value: https://library-management-system.onrender.com/api
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://library-management-system.onrender.com
+      
+      # Feature Flags
+      - key: ENABLE_USER_REGISTRATION
+        value: "true"
+      - key: ENABLE_BOOK_RESERVATION
+        value: "true"
+      - key: ENABLE_EMAIL_NOTIFICATIONS
+        value: "true"
+      
+      # Upload Settings
+      - key: UPLOAD_MAX_SIZE
+        value: "5242880"
+      - key: UPLOAD_ALLOWED_TYPES
+        value: image/jpeg,image/png,image/webp
