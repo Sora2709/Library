@@ -1,0 +1,13 @@
+# .dockerignore
+node_modules
+.next
+.git
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.log
+.vercel
+.vscode
+.gitignore
+README.md
