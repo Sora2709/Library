@@ -1,13 +1,23 @@
+# render.yaml
 services:
   - type: web
     name: library-management-system
-    runtime: node
+    runtime: docker
+    repo: https://github.com/Sora2709/Library
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     plan: free
-    buildCommand: npm install && npm run build
-    startCommand: npm start
     envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://sambathsora_db_user:Bath2709@sora.ofemqen.mongodb.net/library?retryWrites=true&w=majority&appName=sora
+      - key: MONGODB_DB_NAME
+        value: library
+      - key: NEXTAUTH_SECRET
+        value: a247aaca1a604f4f45e7f3a98dc8c9c14ccc99bec208f7da3cab5976582bb510
+      - key: NEXTAUTH_URL
+        value: https://library-management-system.onrender.com
       - key: NODE_ENV
         value: production
-      - key: NEXT_PUBLIC_API_URL
-        value: https://library-management-system.onrender.com
-    healthCheckPath: /api/health
+      - key: PORT
+        value: 3000
