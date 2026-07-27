@@ -19,6 +19,7 @@
   html {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    
   }
   body {
     @apply bg-slate-50 text-slate-900;
@@ -38,6 +39,9 @@
   }
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     @apply bg-slate-400;
+  }
+    .font-khmer-os {
+    font-family: 'Battambang', 'Khmer OS Battambang', system-ui, sans-serif;
   }
 }
 

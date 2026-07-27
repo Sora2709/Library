@@ -7,10 +7,6 @@ export function DashboardActions() {
   const router = useRouter();
   return (
     <>
-      <Button variant="outline" size="md">
-        <Calendar className="h-4 w-4" />
-        This Month
-      </Button>
       <Button variant="outline" size="md" onClick={() => router.push("/reports")}>
         <Download className="h-4 w-4" />
         Export
