@@ -22,12 +22,13 @@
     "pg": "8.20.0",
     "react": "19.2.6",
     "react-dom": "19.2.6",
+    "react-is": "^19.2.8",
     "recharts": "^3.9.2",
     "tailwind-merge": "^3.6.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "4.1.17",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "22.19.15",
     "@types/pg": "8.18.0",
     "@types/react": "19.2.14",
