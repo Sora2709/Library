@@ -1,3 +1,5 @@
+/* src/app/globals.css - Tailwind CSS v4 */
+
 @import "tailwindcss";
 
 @theme {
@@ -19,10 +21,10 @@
   html {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    
   }
   body {
-    @apply bg-slate-50 text-slate-900;
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-900);
   }
 }
 
@@ -32,15 +34,16 @@
     height: 6px;
   }
   .scrollbar-thin::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background-color: transparent;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 rounded-full;
+    background-color: var(--color-slate-300);
+    border-radius: 9999px;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    @apply bg-slate-400;
+    background-color: var(--color-slate-400);
   }
-    .font-khmer-os {
+  .font-khmer-os {
     font-family: 'Battambang', 'Khmer OS Battambang', system-ui, sans-serif;
   }
 }
