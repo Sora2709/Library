@@ -13,6 +13,7 @@ export interface Book {
   description?: string;
   source?: string;
   donatedBy?: string;
+  coverUrl?: string; 
 }
 
 export interface Member {

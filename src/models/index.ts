@@ -67,7 +67,6 @@ const bookSchema = new Schema(
     description: { type: String, default: "" },
     source: { type: String, default: "" },        // Purchase, Donation, Other
     donatedBy: { type: String, default: "" }, 
-    // ✅ bookCount removed from here - it belongs to Author model
     status: {
       type: String,
       enum: ["available", "low_stock", "unavailable"],

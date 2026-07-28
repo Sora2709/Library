@@ -9,21 +9,13 @@ interface BookImageProps {
   className?: string;
   width?: number;
   height?: number;
-  fallback?: string;
 }
 
-export function BookImage({
-  src,
-  alt = 'Book cover',
-  className = '',
-  width,
-  height,
-  fallback = '/uploads/default-book-cover.jpg',
-}: BookImageProps) {
+export function BookImage({ src, alt = 'Book cover', className = '', width, height }: BookImageProps) {
   const [error, setError] = useState(false);
   
   // If no src or error, use fallback
-  const imageSrc = (!src || error) ? fallback : src;
+  const imageSrc = (!src || error) ? '/uploads/default-book-cover.jpg' : src;
   
   return (
     <img

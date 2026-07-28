@@ -133,6 +133,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
       status: book.status || "available",
       source: book.source || "",
       donatedBy: book.donatedBy || "",
+      coverUrl: book.coverUrl || "",
     };
     
     return Response.json({ ok: true, data: transformedBook });

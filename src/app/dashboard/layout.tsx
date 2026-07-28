@@ -15,7 +15,7 @@ export default function DashboardLayout({
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    // ✅ Check session using your custom auth API
+    // Check session using custom auth API
     fetch('/api/auth/me', {
       cache: 'no-store',
       credentials: 'include',
@@ -38,8 +38,11 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50/30 to-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-blue-600 shadow-lg shadow-blue-500/10"></div>
+          <p className="text-sm text-slate-500 font-medium">Loading dashboard...</p>
+        </div>
       </div>
     );
   }

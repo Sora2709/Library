@@ -27,10 +27,11 @@ export default function DashboardPage() {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200">
           <CardHeader className="flex-row items-start justify-between space-y-0 pb-2">
             <div>
-              <CardTitle className="text-base">Borrowing Activity</CardTitle>        
+              <CardTitle className="text-base text-slate-900">Borrowing Activity</CardTitle>
+              <CardDescription>Monthly borrows and returns trend</CardDescription>
             </div>
           </CardHeader>
           <CardContent>
@@ -38,9 +39,9 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Collections by Category</CardTitle>
+            <CardTitle className="text-base text-slate-900">Collections by Category</CardTitle>
             <CardDescription>Book distribution across subjects</CardDescription>
           </CardHeader>
           <CardContent>
@@ -51,10 +52,10 @@ export default function DashboardPage() {
 
       {/* Recent Activities & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200">
           <CardHeader className="flex-row items-center justify-between space-y-0 pb-4">
             <div>
-              <CardTitle className="text-base">Recent Activities</CardTitle>
+              <CardTitle className="text-base text-slate-900">Recent Activities</CardTitle>
               <CardDescription>Latest borrows, returns, and member registrations</CardDescription>
             </div>
           </CardHeader>
@@ -63,9 +64,9 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Quick Actions</CardTitle>
+            <CardTitle className="text-base text-slate-900">Quick Actions</CardTitle>
             <CardDescription>Frequently used operations</CardDescription>
           </CardHeader>
           <CardContent>

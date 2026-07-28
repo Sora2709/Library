@@ -93,6 +93,7 @@ export async function POST(req: NextRequest) {
       status: book.status || "available",
       source: book.source || "",
       donatedBy: book.donatedBy || "",
+      coverUrl: book.coverUrl || "",
     };
 
     return Response.json({ ok: true, data: transformedBook }, { status: 201 });
