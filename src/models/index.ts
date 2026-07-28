@@ -1,3 +1,4 @@
+// src/models/index.ts
 import mongoose, { Schema, type InferSchemaType, type Model } from "mongoose";
 
 /* ---------------- Application User ---------------- */
@@ -39,6 +40,7 @@ const authorSchema = new Schema(
     bio: { type: String, default: "" },
     birthYear: { type: Number },
     nationality: { type: String, default: "" },
+    bookCount: { type: Number, default: 0 }, // ✅ Track how many books this author has
   },
   { timestamps: true }
 );
@@ -63,9 +65,9 @@ const bookSchema = new Schema(
     totalCopies: { type: Number, default: 1, min: 0 },
     availableCopies: { type: Number, default: 1, min: 0 },
     description: { type: String, default: "" },
-    source: { type: String, default: "" },        // Added: Purchase, Donation, Other
+    source: { type: String, default: "" },        // Purchase, Donation, Other
     donatedBy: { type: String, default: "" }, 
-    bookCount: { type: Number, default: 0 },
+    // ✅ bookCount removed from here - it belongs to Author model
     status: {
       type: String,
       enum: ["available", "low_stock", "unavailable"],
