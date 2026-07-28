@@ -94,6 +94,29 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
     return `read_notifications_${userId}`;
   }, [userId]);
 
+  // Load read notifications from localStorage
+  const loadReadStatus = useCallback(() => {
+    if (!userId) return [];
+    try {
+      const storageKey = getStorageKey();
+      const stored = localStorage.getItem(storageKey);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  }, [userId, getStorageKey]);
+
+  // Save read notification to localStorage
+  const saveReadStatus = useCallback((notificationIds: string[]) => {
+    if (!userId) return;
+    try {
+      const storageKey = getStorageKey();
+      localStorage.setItem(storageKey, JSON.stringify(notificationIds));
+    } catch (error) {
+      console.error("Failed to save read status:", error);
+    }
+  }, [userId, getStorageKey]);
+
   // Fetch notifications from API
   const fetchNotifications = useCallback(async () => {
     if (!userId) return;
@@ -106,10 +129,9 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
         const notifications = json.data.notifications;
         
         // Load read status from localStorage for this user
-        const storageKey = getStorageKey();
-        const readIds = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        const readIds = loadReadStatus();
         
-        // Merge read status
+        // Merge read status - mark as read if in localStorage
         const merged = notifications.map((n: NotifItem) => ({
           ...n,
           read: readIds.includes(n.id) || n.read || false,
@@ -120,7 +142,7 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
     }
-  }, [userId, getStorageKey]);
+  }, [userId, loadReadStatus]);
 
   // Initial load and auto-polling
   useEffect(() => {
@@ -191,10 +213,9 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
   // Mark all notifications as read
   const markAllRead = useCallback(() => {
     const readIds = notifList.map((n) => n.id);
-    const storageKey = getStorageKey();
-    localStorage.setItem(storageKey, JSON.stringify(readIds));
+    saveReadStatus(readIds);
     setNotifList((prev) => prev.map((n) => ({ ...n, read: true })));
-  }, [notifList, getStorageKey]);
+  }, [notifList, saveReadStatus]);
 
   // Mark single notification as read
   const markAsRead = useCallback((id: string) => {
@@ -204,12 +225,25 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
       );
       
       const readIds = updated.filter((n) => n.read).map((n) => n.id);
-      const storageKey = getStorageKey();
-      localStorage.setItem(storageKey, JSON.stringify(readIds));
+      saveReadStatus(readIds);
       
       return updated;
     });
-  }, [getStorageKey]);
+  }, [saveReadStatus]);
+
+  // Mark notification as unread (for testing)
+  const markAsUnread = useCallback((id: string) => {
+    setNotifList((prev) => {
+      const updated = prev.map((item) => 
+        item.id === id ? { ...item, read: false } : item
+      );
+      
+      const readIds = updated.filter((n) => n.read).map((n) => n.id);
+      saveReadStatus(readIds);
+      
+      return updated;
+    });
+  }, [saveReadStatus]);
 
   const handleSignOut = async () => {
     try {
@@ -397,7 +431,9 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
                           }}
                           whileHover={{ scale: 1.01 }}
                           onClick={() => {
-                            if (!n.read) markAsRead(n.id);
+                            if (!n.read) {
+                              markAsRead(n.id);
+                            }
                           }}
                           className={cn(
                             "w-full text-left flex gap-3 p-4 border-b border-slate-50 hover:bg-slate-50/50 transition cursor-pointer",
