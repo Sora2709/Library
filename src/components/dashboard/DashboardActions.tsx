@@ -7,11 +7,11 @@ export function DashboardActions() {
   const router = useRouter();
   return (
     <>
-      <Button variant="outline" size="md" onClick={() => router.push("/reports")}>
+      <Button variant="outline" size="md" onClick={() => router.push("/dashboard/reports")}>
         <Download className="h-4 w-4" />
         Export
       </Button>
-      <Button size="md" onClick={() => router.push("/books")}>
+      <Button size="md" onClick={() => router.push("/dashboard/books")}>
         <Plus className="h-4 w-4" />
         Add Book
       </Button>

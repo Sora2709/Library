@@ -1,3 +1,6 @@
+// src/app/dashboard/page.tsx
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { BorrowingTrendChart } from "@/components/dashboard/BorrowingTrendChart";
@@ -27,13 +30,7 @@ export default function DashboardPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex-row items-start justify-between space-y-0 pb-2">
             <div>
-              <CardTitle className="text-base">Borrowing Activity</CardTitle>
-              <CardDescription>Monthly borrows and returns over the last year</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="text-xs font-medium text-primary-600 bg-primary-50 rounded-md px-2 py-1">12M</button>
-              <button className="text-xs font-medium text-slate-500 hover:bg-slate-100 rounded-md px-2 py-1">6M</button>
-              <button className="text-xs font-medium text-slate-500 hover:bg-slate-100 rounded-md px-2 py-1">30D</button>
+              <CardTitle className="text-base">Borrowing Activity</CardTitle>        
             </div>
           </CardHeader>
           <CardContent>
@@ -60,7 +57,6 @@ export default function DashboardPage() {
               <CardTitle className="text-base">Recent Activities</CardTitle>
               <CardDescription>Latest borrows, returns, and member registrations</CardDescription>
             </div>
-            <button className="text-xs font-medium text-primary-600 hover:text-primary-700">View all</button>
           </CardHeader>
           <CardContent>
             <RecentActivities />

@@ -65,6 +65,7 @@ const bookSchema = new Schema(
     description: { type: String, default: "" },
     source: { type: String, default: "" },        // Added: Purchase, Donation, Other
     donatedBy: { type: String, default: "" }, 
+    bookCount: { type: Number, default: 0 },
     status: {
       type: String,
       enum: ["available", "low_stock", "unavailable"],

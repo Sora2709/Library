@@ -1,6 +1,9 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Inter } from "next/font/google";
+import { Providers } from "./providers";
+import { ToastProvider } from "@/components/ui/toast"; // ✅ Add this import
 import "./globals.css";
 
 const inter = Inter({
@@ -17,7 +20,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="bg-slate-50 text-slate-900 antialiased">{children}</body>
+      <body className="bg-slate-50 text-slate-900 antialiased">
+        <Providers>
+          <ToastProvider> {/* ✅ Wrap children with ToastProvider */}
+            {children}
+          </ToastProvider>
+        </Providers>
+      </body>
     </html>
   );
 }

@@ -1,3 +1,4 @@
+// src/app/(auth)/login/page.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -20,6 +21,9 @@ export default function LoginPage() {
     setError("");
     try {
       const res = await fetch("/api/auth/bootstrap", { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error("Unable to check account setup. Please try again.");
+      }
       const json = await res.json();
       if (!json.ok) throw new Error(json.error || "Unable to check account setup.");
       setSetupRequired(Boolean(json.data?.setupRequired));
@@ -56,19 +60,25 @@ export default function LoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(setupRequired ? { name, email, password } : { email, password }),
       });
+      
       const json = await res.json();
-      if (!res.ok || !json.ok) throw new Error(json.error || "Unable to sign in.");
+      
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || "Unable to sign in.");
+      }
 
-      // Cache public details only for immediate client UI rendering.
-      // Authentication itself is handled by the HTTP-only session cookie.
+      // Cache public details for immediate client UI rendering
       try {
         localStorage.setItem("libraria_user", JSON.stringify(json.data));
       } catch {}
-      router.replace("/");
-      router.refresh();
+
+      console.log("Login successful, redirecting to dashboard...");
+
+      // ✅ FIX: Use window.location for full page redirect
+      window.location.href = "/dashboard";
+      
     } catch (err) {
       setError((err as Error).message);
-    } finally {
       setLoading(false);
     }
   };
@@ -165,7 +175,12 @@ export default function LoginPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       className="flex h-11 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-10 py-1 text-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500/20 transition"
                     />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition" aria-label={showPassword ? "Hide password" : "Show password"}>
+                    <button 
+                      type="button" 
+                      onClick={() => setShowPassword(!showPassword)} 
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition" 
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
@@ -177,7 +192,11 @@ export default function LoginPage() {
                       <input type="checkbox" className="rounded border-slate-300 text-primary-600 focus:ring-primary-500" defaultChecked />
                       Remember me
                     </label>
-                    <button type="button" onClick={() => setError("Please contact your library administrator to reset your password.")} className="text-xs font-medium text-primary-600 hover:text-primary-700">
+                    <button 
+                      type="button" 
+                      onClick={() => setError("Please contact your library administrator to reset your password.")} 
+                      className="text-xs font-medium text-primary-600 hover:text-primary-700"
+                    >
                       Forgot password?
                     </button>
                   </div>
@@ -185,9 +204,15 @@ export default function LoginPage() {
 
                 <Button type="submit" className="w-full h-11" disabled={loading}>
                   {loading ? (
-                    <span className="flex items-center gap-2"><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />{isSetup ? "Creating account…" : "Signing in…"}</span>
+                    <span className="flex items-center gap-2">
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      {isSetup ? "Creating account…" : "Signing in…"}
+                    </span>
                   ) : (
-                    <span className="flex items-center gap-2">{isSetup ? "Create administrator" : "Sign in"}<ArrowRight className="h-4 w-4" /></span>
+                    <span className="flex items-center gap-2">
+                      {isSetup ? "Create administrator" : "Sign in"}
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
                   )}
                 </Button>
               </form>

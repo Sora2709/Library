@@ -1,3 +1,4 @@
+// src/components/layout/Sidebar.tsx
 "use client";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
@@ -17,12 +18,12 @@ import {
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Books", href: "/books", icon: BookOpen },
-  { name: "Members", href: "/members", icon: Users },
-  { name: "Borrow & Return", href: "/borrow", icon: ArrowLeftRight },
-  { name: "Categories & Authors", href: "/categories", icon: Tags },
-  { name: "Reports", href: "/reports", icon: BarChart3 },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Books", href: "/dashboard/books", icon: BookOpen },
+  { name: "Members", href: "/dashboard/members", icon: Users },
+  { name: "Borrow & Return", href: "/dashboard/borrow", icon: ArrowLeftRight },
+  { name: "Categories & Authors", href: "/dashboard/categories", icon: Tags },
+  { name: "Reports", href: "/dashboard/reports", icon: BarChart3 },
 ];
 
 interface SidebarProps {
@@ -44,6 +45,8 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
     router.push("/login");
   };
 
+  const currentPath = pathname ?? "";
+
   return (
     <>
       {mobileOpen && (
@@ -55,12 +58,13 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex flex-col bg-white border-r border-slate-200/80 transition-all duration-300 lg:relative lg:z-0",
+          // ✅ STICKY sidebar - scrolls with content
+          "sticky top-0 h-screen z-50 flex flex-col bg-white border-r border-slate-200/80 transition-all duration-300",
           collapsed ? "lg:w-[72px]" : "lg:w-64",
           mobileOpen ? "w-64 translate-x-0" : "w-64 -translate-x-full lg:translate-x-0"
         )}
       >
-        <div className="flex h-16 items-center gap-3 px-5 border-b border-slate-100">
+        <div className="flex h-16 items-center gap-3 px-5 border-b border-slate-100 shrink-0">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary-600 to-primary-700 text-white shadow-lg shadow-primary-600/20 shrink-0">
             <Library className="h-5 w-5" />
           </div>
@@ -84,8 +88,8 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
           )}
           {navigation.map((item) => {
             const isActive =
-              pathname === item.href ||
-              (item.href !== "/" && pathname.startsWith(item.href));
+              currentPath === item.href ||
+              (item.href !== "/dashboard" && currentPath.startsWith(item.href));
             return (
               <Link
                 key={item.name}
@@ -116,13 +120,13 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
           })}
         </nav>
 
-        <div className="px-3 py-3 border-t border-slate-100 space-y-0.5">
+        <div className="px-3 py-3 border-t border-slate-100 space-y-0.5 shrink-0">
           <Link
-            href="/settings"
+            href="/dashboard/settings"
             onClick={onMobileClose}
             className={cn(
               "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
-              pathname === "/settings"
+              currentPath === "/dashboard/settings"
                 ? "bg-primary-50 text-primary-700"
                 : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
               collapsed && "justify-center px-0"
@@ -132,7 +136,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
             <Settings
               className={cn(
                 "h-5 w-5 shrink-0",
-                pathname === "/settings" ? "text-primary-600" : "text-slate-400 group-hover:text-slate-600"
+                currentPath === "/dashboard/settings" ? "text-primary-600" : "text-slate-400 group-hover:text-slate-600"
               )}
               strokeWidth={1.8}
             />
