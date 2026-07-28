@@ -12,14 +12,13 @@ import {
   Library,
   Settings,
   LogOut,
-  ChevronLeft,
-  ChevronRight,
   Sparkles,
   Shield,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -42,6 +41,40 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Close mobile sidebar on escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && mobileOpen) {
+        onMobileClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [mobileOpen, onMobileClose]);
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -65,16 +98,22 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden"
             onClick={onMobileClose}
+            role="button"
+            aria-label="Close menu"
           />
         )}
       </AnimatePresence>
+
+      {/* REMOVED: Mobile Menu Button - Now handled by TopNav */}
 
       <motion.aside
         initial={false}
         animate={{
           width: collapsed ? "4.5rem" : "16rem",
+          transform: mobileOpen ? "translateX(0)" : isMobile ? "translateX(-100%)" : "translateX(0)",
           transition: {
             type: "spring",
             stiffness: 300,
@@ -82,18 +121,21 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
           }
         }}
         className={cn(
-          "sticky top-0 h-screen z-50 flex flex-col bg-white shadow-lg shadow-slate-200/50 border-r border-slate-200/60 overflow-hidden",
-          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          "sticky top-0 h-screen z-50 flex flex-col bg-white shadow-lg shadow-slate-200/50 border-r border-slate-200/60 overflow-hidden shrink-0",
+          isMobile && "fixed top-0 left-0 h-full shadow-2xl"
         )}
         style={{
-          width: mobileOpen ? "16rem" : undefined,
+          width: mobileOpen ? "16rem" : collapsed ? "4.5rem" : "16rem",
+          flexShrink: 0,
         }}
+        role="navigation"
+        aria-label="Main navigation"
       >
-        {/* Header with Bopha & Vuthy branding */}
+        {/* Header - Clean, no toggle button */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex h-16 items-center gap-3 px-5 border-b border-slate-200/60 shrink-0 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 relative overflow-hidden"
+          className="flex h-16 items-center gap-2 px-4 border-b border-slate-200/60 shrink-0 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 relative overflow-hidden"
         >
           {/* Animated background shine */}
           <motion.div
@@ -102,6 +144,22 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
           />
+
+          {/* Mobile close button inside sidebar */}
+          {isMobile && mobileOpen && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0 }}
+              onClick={onMobileClose}
+              className="absolute right-2 top-2 p-1.5 rounded-lg hover:bg-white/20 transition-colors duration-200 text-white"
+              aria-label="Close menu"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <X className="h-4 w-4" />
+            </motion.button>
+          )}
 
           <motion.div
             whileHover={{
@@ -112,15 +170,9 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
                 ease: "easeInOut",
               }
             }}
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-600/20 shrink-0 relative"
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-600/20 shrink-0"
           >
-            <Library className="h-5 w-5" />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 rounded-lg bg-white/20"
-            />
+            <Library className="h-4 w-4" />
           </motion.div>
           
           <AnimatePresence mode="wait">
@@ -129,13 +181,13 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                className="flex flex-col overflow-hidden"
+                className="flex flex-col overflow-hidden leading-none"
               >
-                <span className="text-sm font-bold text-slate-900 leading-tight tracking-tight flex items-center gap-1">
+                <span className="text-sm font-bold text-slate-900 tracking-tight whitespace-nowrap">
                   Bopha & Vuthy
-                  <Sparkles className="h-3 w-3 text-blue-500" />
+                  <Sparkles className="h-3 w-3 text-blue-500 inline-block ml-1" />
                 </span>
-                <span className="text-[10px] text-slate-500 leading-tight tracking-wide">
+                <span className="text-[10px] text-slate-500 tracking-wide whitespace-nowrap">
                   Library System
                 </span>
               </motion.div>
@@ -143,7 +195,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
           </AnimatePresence>
         </motion.div>
 
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto scrollbar-thin">
+        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto scrollbar-thin" role="menubar">
           <AnimatePresence mode="wait">
             {!collapsed && (
               <motion.div
@@ -190,10 +242,13 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
                 whileTap={{ scale: 0.98 }}
                 onHoverStart={() => setHoveredItem(item.name)}
                 onHoverEnd={() => setHoveredItem(null)}
+                role="menuitem"
               >
                 <Link
                   href={item.href}
-                  onClick={onMobileClose}
+                  onClick={() => {
+                    if (isMobile) onMobileClose();
+                  }}
                   className={cn(
                     "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden",
                     isActive
@@ -202,6 +257,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
                     collapsed && "justify-center px-0"
                   )}
                   title={collapsed ? item.name : undefined}
+                  aria-current={isActive ? "page" : undefined}
                 >
                   {/* Active indicator bar */}
                   {isActive && (
@@ -267,7 +323,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
                   )}
 
                   {/* Tooltip for collapsed state */}
-                  {collapsed && isHovered && (
+                  {collapsed && isHovered && !isMobile && (
                     <motion.div
                       initial={{ opacity: 0, x: -5, scale: 0.95 }}
                       animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -296,7 +352,9 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
           >
             <Link
               href="/dashboard/settings"
-              onClick={onMobileClose}
+              onClick={() => {
+                if (isMobile) onMobileClose();
+              }}
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden",
                 currentPath === "/dashboard/settings"
@@ -363,51 +421,9 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
             )}
           </motion.button>
 
-          {/* Collapse Toggle */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onToggle}
-            className={cn(
-              "hidden lg:flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all",
-              collapsed && "justify-center px-0"
-            )}
-          >
-            {collapsed ? (
-              <motion.div
-                animate={{ rotate: 0 }}
-                whileHover={{ rotate: 180 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ChevronRight className="h-5 w-5" />
-              </motion.div>
-            ) : (
-              <>
-                <motion.div
-                  animate={{ rotate: 0 }}
-                  whileHover={{ rotate: -180 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </motion.div>
-                <AnimatePresence mode="wait">
-                  {!collapsed && (
-                    <motion.span
-                      initial={{ opacity: 0, x: -5 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -5 }}
-                    >
-                      Collapse
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </>
-            )}
-          </motion.button>
-
-          {/* Version indicator */}
+          {/* Version indicator - NO TOGGLE BUTTON */}
           <AnimatePresence mode="wait">
-            {!collapsed && (
+            {!collapsed && !isMobile && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { 
   Bell, 
   Menu, 
-  Search, 
   BookOpen, 
   CheckCircle2, 
   AlertTriangle, 
@@ -16,12 +15,13 @@ import {
   User, 
   Sliders, 
   HelpCircle,
-  Sparkles,
   ChevronDown,
-  X
+  X,
+  Settings,
+  LayoutDashboard,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -57,8 +57,6 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
   const router = useRouter();
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userName, setUserName] = useState("");
@@ -66,10 +64,29 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
   const [userAvatar, setUserAvatar] = useState("");
   const [notifList, setNotifList] = useState<NotifItem[]>([]);
   const [userId, setUserId] = useState<string>("");
+  const [isMobile, setIsMobile] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const notifRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
-  const searchRef = useRef<HTMLDivElement>(null);
   const unreadCount = notifList.filter((n) => !n.read).length;
+
+  // Update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Check if mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Get storage key for current user
   const getStorageKey = useCallback(() => {
@@ -165,9 +182,6 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setProfileOpen(false);
       }
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setSearchOpen(false);
-      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -231,12 +245,29 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
     },
   };
 
+  // Format time
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
+
+  // Get greeting based on time
+  const getGreeting = () => {
+    const hour = currentTime.getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
   // Show nothing while loading
   if (isLoading) {
     return (
       <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200/60 bg-white/80 px-4 lg:px-6 backdrop-blur-md">
-        <div className="flex-1 max-w-xl">
-          <div className="h-9 w-full animate-pulse rounded-lg bg-slate-100"></div>
+        <div className="flex-1">
+          <div className="h-4 w-48 animate-pulse rounded bg-slate-100"></div>
         </div>
         <div className="flex items-center gap-1.5 ml-auto">
           <div className="h-8 w-8 animate-pulse rounded-full bg-slate-100"></div>
@@ -254,7 +285,7 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200/60 bg-white/80 px-4 lg:px-6 backdrop-blur-md"
+      className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200/60 bg-white/80 px-3 sm:px-4 lg:px-6 backdrop-blur-md"
     >
       {/* Mobile menu button */}
       <motion.button
@@ -267,42 +298,29 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
         <Menu className="h-5 w-5" />
       </motion.button>
 
-      {/* Search Bar - Without keyboard shortcut */}
-      <div className="flex-1 max-w-xl relative" ref={searchRef}>
+      {/* Welcome Section */}
+      <div className="flex-1 flex items-center gap-3 min-w-0 px-2">
         <motion.div
-          initial={false}
-          animate={{ width: searchOpen ? "100%" : "auto" }}
-          className="relative"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="flex items-center gap-2 min-w-0"
         >
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <motion.input
-            onFocus={() => setSearchOpen(true)}
-            onBlur={() => {
-              if (!searchQuery) setTimeout(() => setSearchOpen(false), 200);
-            }}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search books, members..."
-            className="w-full h-9 pl-9 pr-10 text-sm bg-slate-50/80 border border-slate-200/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
-          />
-          {searchOpen && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0 }}
-              onClick={() => {
-                setSearchOpen(false);
-                setSearchQuery("");
-              }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-slate-100 text-slate-400"
-            >
-              <X className="h-3.5 w-3.5" />
-            </motion.button>
-          )}
+          <Sparkles className="h-4 w-4 text-blue-500 hidden sm:block" />
+          <div>
+            <p className="text-sm font-medium text-slate-700 truncate">
+              <span className="hidden sm:inline">{getGreeting()}, </span>
+              <span className="text-blue-600 font-semibold">{userName || "Admin"}</span>
+            </p>
+            <p className="text-[11px] text-slate-400 flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {formatTime(currentTime)}
+            </p>
+          </div>
         </motion.div>
       </div>
 
-      <div className="flex items-center gap-1.5 ml-auto">
+      <div className="flex items-center gap-0.5 sm:gap-1.5 ml-auto">
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
           <motion.button
@@ -322,7 +340,7 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
                 animate={{ scale: 1 }}
                 className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white ring-2 ring-white"
               >
-                {unreadCount}
+                {unreadCount > 9 ? '9+' : unreadCount}
               </motion.span>
             )}
           </motion.button>
@@ -449,7 +467,7 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
           </AnimatePresence>
         </div>
 
-        {/* Profile - Only show when authenticated */}
+        {/* Profile */}
         {isAuthenticated ? (
           <div className="relative" ref={profileRef}>
             <motion.button
@@ -510,6 +528,7 @@ export function TopNav({ onMobileMenuClick }: TopNavProps) {
                   </div>
                   <div className="p-1.5">
                     {[
+                      { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
                       { label: "Your Profile", icon: User, href: "/dashboard/settings/profile" },
                       { label: "Preferences", icon: Sliders, href: "/dashboard/settings/preferences" },
                       { label: "Help & Support", icon: HelpCircle, href: "/dashboard/settings/help" },
