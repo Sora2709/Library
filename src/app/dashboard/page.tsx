@@ -25,75 +25,70 @@ export default function DashboardPage() {
       {/* Live Stats Grid - Fully Responsive */}
       <LiveStats />
 
-      {/* Charts Row - Responsive Breakpoints */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
-        {/* Mobile: Full width, Tablet+: 2/3 - 1/3 split */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
-          <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200">
-            <CardHeader className="flex-row items-start justify-between space-y-0 pb-2">
-              <div>
-                <CardTitle className="text-sm sm:text-base text-slate-900">
-                  Borrowing Activity
-                </CardTitle>
-                <CardDescription className="text-xs sm:text-sm">
-                  Monthly borrows and returns trend
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="h-[220px] sm:h-[260px] lg:h-[300px]">
-              <BorrowingTrendChart />
-            </CardContent>
-          </Card>
-
-          <Card className="border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200">
-            <CardHeader className="pb-2">
+      {/* Charts Row - Equal Height Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+        <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+          <CardHeader className="flex-row items-start justify-between space-y-0 pb-2 flex-shrink-0">
+            <div>
               <CardTitle className="text-sm sm:text-base text-slate-900">
-                Collections by Category
+                Borrowing Activity
               </CardTitle>
               <CardDescription className="text-xs sm:text-sm">
-                Book distribution across subjects
+                Monthly borrows and returns trend
               </CardDescription>
-            </CardHeader>
-            <CardContent className="h-[220px] sm:h-[260px] lg:h-[300px]">
-              <CategoryChart />
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]">
+            <BorrowingTrendChart />
+          </CardContent>
+        </Card>
+
+        <Card className="border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+          <CardHeader className="pb-2 flex-shrink-0">
+            <CardTitle className="text-sm sm:text-base text-slate-900">
+              Collections by Category
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Book distribution across subjects
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]">
+            <CategoryChart />
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Recent Activities & Quick Actions - Responsive */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
-          <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200">
-            <CardHeader className="flex-row items-center justify-between space-y-0 pb-4">
-              <div>
-                <CardTitle className="text-sm sm:text-base text-slate-900">
-                  Recent Activities
-                </CardTitle>
-                <CardDescription className="text-xs sm:text-sm">
-                  Latest borrows, returns, and member registrations
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="max-h-[300px] sm:max-h-[350px] lg:max-h-[400px] overflow-y-auto">
-              <RecentActivities />
-            </CardContent>
-          </Card>
-
-          <Card className="border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200">
-            <CardHeader className="pb-2">
+      {/* Recent Activities & Quick Actions - Equal Height Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+        <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+          <CardHeader className="flex-row items-center justify-between space-y-0 pb-4 flex-shrink-0">
+            <div>
               <CardTitle className="text-sm sm:text-base text-slate-900">
-                Quick Actions
+                Recent Activities
               </CardTitle>
               <CardDescription className="text-xs sm:text-sm">
-                Frequently used operations
+                Latest borrows, returns, and member registrations
               </CardDescription>
-            </CardHeader>
-            <CardContent className="p-3 sm:p-4 pt-0">
-              <QuickActions />
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-[300px] sm:min-h-[350px] lg:min-h-[400px] overflow-y-auto">
+            <RecentActivities />
+          </CardContent>
+        </Card>
+
+        <Card className="border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+          <CardHeader className="pb-2 flex-shrink-0">
+            <CardTitle className="text-sm sm:text-base text-slate-900">
+              Quick Actions
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Frequently used operations
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 p-3 sm:p-4 pt-0 min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]">
+            <QuickActions />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
