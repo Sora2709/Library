@@ -13,7 +13,7 @@ import { DbStatusBanner } from "@/components/dashboard/DbStatusBanner";
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-4 sm:space-y-6 animate-fade-in px-4 sm:px-6 lg:px-8">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in px-4 sm:px-6 lg:px-8">
       <PageHeader
         title="Dashboard Overview"
         description="Welcome back! Here's what's happening at your library today."
@@ -26,66 +26,66 @@ export default function DashboardPage() {
       <LiveStats />
 
       {/* Charts Row - Equal Height Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
-        <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
+        <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
           <CardHeader className="flex-row items-start justify-between space-y-0 pb-2 flex-shrink-0">
             <div>
-              <CardTitle className="text-sm sm:text-base text-slate-900">
+              <CardTitle className="text-base flex items-center gap-2 text-slate-900">
                 Borrowing Activity
               </CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
+              <CardDescription className="text-sm text-slate-500">
                 Monthly borrows and returns trend
               </CardDescription>
             </div>
           </CardHeader>
-          <CardContent className="flex-1 min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]">
+          <CardContent className="flex-1 min-h-[300px]">
             <BorrowingTrendChart />
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+        <Card className="border border-slate-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
           <CardHeader className="pb-2 flex-shrink-0">
-            <CardTitle className="text-sm sm:text-base text-slate-900">
+            <CardTitle className="text-base flex items-center gap-2 text-slate-900">
               Collections by Category
             </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
+            <CardDescription className="text-sm text-slate-500">
               Book distribution across subjects
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex-1 min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]">
+          <CardContent className="flex-1 min-h-[300px]">
             <CategoryChart />
           </CardContent>
         </Card>
       </div>
 
       {/* Recent Activities & Quick Actions - Equal Height Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
-        <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
+        <Card className="lg:col-span-2 border border-slate-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
           <CardHeader className="flex-row items-center justify-between space-y-0 pb-4 flex-shrink-0">
             <div>
-              <CardTitle className="text-sm sm:text-base text-slate-900">
+              <CardTitle className="text-base flex items-center gap-2 text-slate-900">
                 Recent Activities
               </CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
+              <CardDescription className="text-sm text-slate-500">
                 Latest borrows, returns, and member registrations
               </CardDescription>
             </div>
           </CardHeader>
-          <CardContent className="flex-1 min-h-[300px] sm:min-h-[350px] lg:min-h-[400px] overflow-y-auto">
+          <CardContent className="flex-1 min-h-[400px] overflow-y-auto">
             <RecentActivities />
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+        <Card className="border border-slate-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
           <CardHeader className="pb-2 flex-shrink-0">
-            <CardTitle className="text-sm sm:text-base text-slate-900">
+            <CardTitle className="text-base flex items-center gap-2 text-slate-900">
               Quick Actions
             </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
+            <CardDescription className="text-sm text-slate-500">
               Frequently used operations
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex-1 p-3 sm:p-4 pt-0 min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]">
+          <CardContent className="flex-1 p-4 pt-0 min-h-[400px]">
             <QuickActions />
           </CardContent>
         </Card>

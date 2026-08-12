@@ -1,11 +1,67 @@
+// src/components/dashboard/LiveStats.tsx
 "use client";
 import { useApi } from "@/hooks/useApi";
-import { StatCard } from "@/components/dashboard/StatCard";
+import { Card, CardContent } from "@/components/ui/card";
 import { Loading } from "@/components/ui/states";
 import type { DashboardStats } from "@/lib/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { RefreshCw, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { RefreshCw, TrendingUp, TrendingDown, Minus, BookOpen, Users, Library, BookMarked, Clock, AlertTriangle } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+const iconMap = {
+  BookOpen,
+  Users,
+  Library,
+  BookMarked,
+  Clock,
+  AlertTriangle,
+};
+
+const colorMap = {
+  primary: { bg: "bg-blue-50", text: "text-blue-600", ring: "ring-blue-200" },
+  emerald: { bg: "bg-emerald-50", text: "text-emerald-600", ring: "ring-emerald-200" },
+  sky: { bg: "bg-sky-50", text: "text-sky-600", ring: "ring-sky-200" },
+  violet: { bg: "bg-violet-50", text: "text-violet-600", ring: "ring-violet-200" },
+  amber: { bg: "bg-amber-50", text: "text-amber-600", ring: "ring-amber-200" },
+};
+
+const trendIconMap = {
+  up: TrendingUp,
+  down: TrendingDown,
+  neutral: Minus,
+};
+
+const trendColorMap = {
+  up: "text-emerald-600 bg-emerald-50",
+  down: "text-red-600 bg-red-50",
+  neutral: "text-slate-400 bg-slate-50",
+};
+
+const kpiVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      delay: i * 0.05,
+      type: "spring" as const,
+      stiffness: 300,
+      damping: 25,
+    }
+  }),
+  hover: {
+    y: -4,
+    scale: 1.02,
+    boxShadow: "0 10px 40px -5px rgba(0,0,0,0.1)",
+    transition: {
+      type: "spring" as const,
+      stiffness: 400,
+      damping: 15,
+    }
+  }
+};
 
 const buildCards = (s: DashboardStats) => [
   { 
@@ -170,74 +226,106 @@ export function LiveStats() {
         </motion.button>
       </motion.div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      {/* Stats Grid - Reports Page KPI Style */}
+      <motion.div 
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.05,
+              delayChildren: 0.1,
+            }
+          }
+        }}
+      >
         <AnimatePresence mode="sync">
-          {cards.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ 
-                opacity: 1, 
-                y: 0, 
-                scale: 1,
-                transition: {
-                  type: "spring" as const,
-                  stiffness: 300,
-                  damping: 25,
-                  delay: index * 0.08,
-                }
-              }}
-              whileHover={{ 
-                y: -4, 
-                scale: 1.02,
-                transition: {
-                  type: "spring" as const,
-                  stiffness: 400,
-                  damping: 15,
-                }
-              }}
-              className="relative group"
-            >
-              {/* Subtle glow on hover */}
+          {cards.map((stat, index) => {
+            const Icon = iconMap[stat.icon as keyof typeof iconMap] || BookOpen;
+            const TrendIcon = trendIconMap[stat.trend];
+            const colors = colorMap[stat.color as keyof typeof colorMap] || colorMap.primary;
+            const trendColors = trendColorMap[stat.trend];
+
+            return (
               <motion.div
-                initial={{ opacity: 0 }}
-                whileHover={{ 
-                  opacity: 1,
-                  scale: 1.2,
-                }}
-                transition={{ duration: 0.3 }}
-                className={`absolute -inset-1 rounded-2xl bg-gradient-to-r from-${stat.color}-500/20 to-${stat.color}-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
-              />
-              
-              <StatCard {...stat} />
-              
-              {/* Animated indicator for live data */}
-              {stat.change === "Live" && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 + index * 0.05 }}
-                  className="absolute top-3 right-3"
-                >
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      opacity: [1, 0.7, 1],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="w-1.5 h-1.5 rounded-full bg-emerald-500"
-                  />
-                </motion.div>
-              )}
-            </motion.div>
-          ))}
+                key={stat.label}
+                custom={index}
+                variants={kpiVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover="hover"
+              >
+                <Card className="border border-slate-200/60 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                  <CardContent className="p-5 relative">
+                    <div className="flex items-start justify-between">
+                      <motion.div 
+                        whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
+                        transition={{ duration: 0.3 }}
+                        className={`flex h-10 w-10 items-center justify-center rounded-lg ${colors.bg} ${colors.text} ring-4 ${colors.ring}`}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </motion.div>
+                      
+                      {/* Trend indicator */}
+                      {stat.trend !== "neutral" && (
+                        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full ${trendColors} text-xs font-medium`}>
+                          <TrendIcon className="h-3 w-3" />
+                          {stat.change}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-slate-500 uppercase tracking-wide font-medium mt-3">
+                      {stat.label}
+                    </p>
+                    <motion.p 
+                      key={stat.value}
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      className="text-2xl font-bold text-slate-900 tracking-tight mt-1"
+                    >
+                      {stat.value}
+                    </motion.p>
+                    
+                    {stat.changeLabel && (
+                      <p className="text-xs text-slate-400 mt-1 truncate">
+                        {stat.changeLabel}
+                      </p>
+                    )}
+                    
+                    {/* Animated indicator for live data */}
+                    {stat.change === "Live" && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2 + index * 0.05 }}
+                        className="absolute top-3 right-3"
+                      >
+                        <motion.div
+                          animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [1, 0.7, 1],
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                          className="w-1.5 h-1.5 rounded-full bg-emerald-500"
+                        />
+                      </motion.div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
-      </div>
+      </motion.div>
 
       {/* Quick stats summary */}
       <motion.div
