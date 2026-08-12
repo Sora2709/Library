@@ -40,23 +40,6 @@ import { type Book, type Category } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Status map for book status badges
-const statusMap: Record<string, { variant: "success" | "danger" | "warning"; label: string }> = {
-  available: { variant: "success", label: "Available" },
-  unavailable: { variant: "danger", label: "Out of Stock" },
-  low_stock: { variant: "warning", label: "Low Stock" },
-};
-
-// Color map for category badges
-const colorClassMap: Record<string, { bg: string; text: string; border: string }> = {
-  primary: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
-  cyan: { bg: "bg-cyan-50", text: "text-cyan-700", border: "border-cyan-200" },
-  emerald: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
-  amber: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
-  rose: { bg: "bg-rose-50", text: "text-rose-700", border: "border-rose-200" },
-  violet: { bg: "bg-violet-50", text: "text-violet-700", border: "border-violet-200" },
-};
-
 // Source options
 const SOURCE_OPTIONS = [
   { value: "purchase", label: "Purchase" },
@@ -476,7 +459,6 @@ export default function BooksPage() {
 
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
 
@@ -504,9 +486,8 @@ export default function BooksPage() {
       b.author.toLowerCase().includes(search.toLowerCase()) ||
       (b.isbn && b.isbn.includes(search));
     const matchesCategory = categoryFilter === "all" || b.category === categoryFilter;
-    const matchesStatus = statusFilter === "all" || b.status === statusFilter;
     const matchesSource = sourceFilter === "all" || b.source === sourceFilter;
-    return matchesSearch && matchesCategory && matchesStatus && matchesSource;
+    return matchesSearch && matchesCategory && matchesSource;
   });
 
   const openAdd = () => {
@@ -592,8 +573,8 @@ export default function BooksPage() {
     }
     exportToExcel([{
       name: "Books",
-      headers: ["Title", "Author", "ISBN", "Category", "Publisher", "Year", "Available", "Total", "Status", "Source", "Donated By"],
-      rows: filteredBooks.map((b) => [b.title, b.author, b.isbn || "", b.category, b.publisher, b.year, b.availableCopies, b.totalCopies, b.status, getSourceLabel(b.source || ""), b.donatedBy || ""]),
+      headers: ["Title", "Author", "ISBN", "Category", "Publisher", "Year", "Available", "Total", "Source", "Donated By"],
+      rows: filteredBooks.map((b) => [b.title, b.author, b.isbn || "", b.category, b.publisher, b.year, b.availableCopies, b.totalCopies, getSourceLabel(b.source || ""), b.donatedBy || ""]),
     }], "books-export");
     toast(`Exported ${filteredBooks.length} books as Excel`, "success");
   };
@@ -683,12 +664,6 @@ export default function BooksPage() {
                   <option key={c} value={c}>{c}</option>
                 ))}
               </Select>
-              <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-36 h-11 rounded-xl border-slate-200/60 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200">
-                <option value="all">All Status</option>
-                <option value="available">Available</option>
-                <option value="low_stock">Low Stock</option>
-                <option value="unavailable">Out of Stock</option>
-              </Select>
               <Select value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className="w-40 h-11 rounded-xl border-slate-200/60 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200">
                 <option value="all">All Sources</option>
                 {SOURCE_OPTIONS.map((option) => (
@@ -715,9 +690,9 @@ export default function BooksPage() {
                   <LayoutGrid className="h-4 w-4" />
                 </button>
               </div>
-              {(search || categoryFilter !== "all" || statusFilter !== "all" || sourceFilter !== "all") && (
+              {(search || categoryFilter !== "all" || sourceFilter !== "all") && (
                 <button
-                  onClick={() => { setSearch(""); setCategoryFilter("all"); setStatusFilter("all"); setSourceFilter("all"); }}
+                  onClick={() => { setSearch(""); setCategoryFilter("all"); setSourceFilter("all"); }}
                   className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 h-11 px-2 transition-colors duration-200"
                 >
                   <X className="h-3.5 w-3.5" />
@@ -741,14 +716,13 @@ export default function BooksPage() {
               <EmptyState
                 icon={BookOpen}
                 title="No books found"
-                description={search || categoryFilter !== "all" || statusFilter !== "all" || sourceFilter !== "all" ? "Try adjusting your filters." : "Add your first book to get started."}
+                description={search || categoryFilter !== "all" || sourceFilter !== "all" ? "Try adjusting your filters." : "Add your first book to get started."}
                 action={<Button size="sm" onClick={openAdd} className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"><Plus className="h-4 w-4" />Add Book</Button>}
               />
             ) : viewMode === "grid" ? (
               /* Grid View */
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
                 {filteredBooks.map((book, index) => {
-                  const status = statusMap[book.status] ?? statusMap.available;
                   const catColor = getCategoryColor(book.category);
                   const colors = colorClassMap[catColor] || colorClassMap.primary;
                   return (
@@ -796,9 +770,6 @@ export default function BooksPage() {
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <Badge variant={status.variant} className="text-[10px] shadow-lg">
-                            {status.label}
-                          </Badge>
                           <span className="text-xs font-medium text-white bg-black/50 px-2 py-0.5 rounded-full">
                             {book.availableCopies}/{book.totalCopies}
                           </span>
@@ -851,14 +822,12 @@ export default function BooksPage() {
                       <th className="text-left font-semibold text-xs text-slate-500 uppercase tracking-wider px-3 py-3">ISBN</th>
                       <th className="text-left font-semibold text-xs text-slate-500 uppercase tracking-wider px-3 py-3">Category</th>
                       <th className="text-left font-semibold text-xs text-slate-500 uppercase tracking-wider px-3 py-3">Copies</th>
-                      <th className="text-left font-semibold text-xs text-slate-500 uppercase tracking-wider px-3 py-3">Status</th>
                       <th className="text-left font-semibold text-xs text-slate-500 uppercase tracking-wider px-3 py-3">Source</th>
                       <th className="text-right font-semibold text-xs text-slate-500 uppercase tracking-wider px-5 py-3">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100/60">
                     {filteredBooks.map((book, index) => {
-                      const status = statusMap[book.status] ?? statusMap.available;
                       const catColor = getCategoryColor(book.category);
                       const colors = colorClassMap[catColor] || colorClassMap.primary;
                       return (
@@ -919,7 +888,6 @@ export default function BooksPage() {
                               <span className="text-slate-400 text-xs">/ {book.totalCopies}</span>
                             </div>
                           </td>
-                          <td className="px-3 py-3"><Badge variant={status.variant}>{status.label}</Badge></td>
                           <td className="px-3 py-3">
                             <div className="flex flex-col">
                               <span className="text-xs text-slate-600">{getSourceLabel(book.source || "")}</span>
@@ -1078,15 +1046,6 @@ export default function BooksPage() {
                 >
                   <p className="text-xs text-slate-500 uppercase tracking-wide">Available</p>
                   <p className="text-sm font-semibold text-emerald-600">{viewModalBook.availableCopies} of {viewModalBook.totalCopies} copies</p>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25 }}
-                  className="p-2 rounded-lg bg-blue-50/50 border border-blue-100/50"
-                >
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">Status</p>
-                  <Badge variant={(statusMap[viewModalBook.status] ?? statusMap.available).variant}>{(statusMap[viewModalBook.status] ?? statusMap.available).label}</Badge>
                 </motion.div>
               </div>
               {viewModalBook.description && (
