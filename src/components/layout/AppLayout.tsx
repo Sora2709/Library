@@ -65,7 +65,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
           <footer className="border-t border-slate-200/50 bg-white/30 backdrop-blur-sm px-6 py-3 text-center text-xs text-slate-400">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
-              <span>© {new Date().getFullYear()} by sambath</span>
+              <span>© {new Date().getFullYear()} Develop by Sambath — Sora</span>
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
