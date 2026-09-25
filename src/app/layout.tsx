@@ -13,8 +13,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Bopha & Vuthy — Library Management System",
-  description: "A modern, professional library management platform for Bopha & Vuthy Foundation Library.",
+  title: "SAMABATH — Library Management System",
+  description: "A modern, professional library management platform for SAMBATH Library.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

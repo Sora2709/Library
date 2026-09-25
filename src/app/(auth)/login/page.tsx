@@ -138,7 +138,7 @@ export default function LoginPage() {
                 </div>
               </div>
               <h1 className="text-2xl font-bold text-white tracking-tight">
-                BOPHA & VUTHY
+                SAMBATH
               </h1>
               <p className="text-blue-200/90 text-sm mt-1 font-medium tracking-wider flex items-center justify-center gap-2">
                 <Sparkles className="h-3 w-3 animate-spin-slow" />
