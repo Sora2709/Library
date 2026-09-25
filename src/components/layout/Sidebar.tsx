@@ -10,7 +10,6 @@ import {
   Tags,
   BarChart3,
   Library,
-  Settings,
   LogOut,
   Sparkles,
   Shield,
@@ -345,46 +344,6 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          {/* Settings */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Link
-              href="/dashboard/settings"
-              onClick={() => {
-                if (isMobile) onMobileClose();
-              }}
-              className={cn(
-                "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden",
-                currentPath === "/dashboard/settings"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-                collapsed && "justify-center px-0"
-              )}
-              title={collapsed ? "Settings" : undefined}
-            >
-              <Settings
-                className={cn(
-                  "h-5 w-5 shrink-0 transition-colors",
-                  currentPath === "/dashboard/settings" ? "text-blue-600" : "text-slate-400 group-hover:text-slate-600"
-                )}
-                strokeWidth={1.8}
-              />
-              <AnimatePresence mode="wait">
-                {!collapsed && (
-                  <motion.span
-                    initial={{ opacity: 0, x: -5 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -5 }}
-                  >
-                    Settings
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </Link>
-          </motion.div>
-
           {/* Sign Out */}
           <motion.button
             whileHover={{ scale: 1.02 }}
