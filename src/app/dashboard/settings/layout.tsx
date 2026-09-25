@@ -5,7 +5,6 @@ import { Building2, User, Sliders, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { id: "general", label: "General", icon: Building2, href: "/dashboard/settings" },
   { id: "profile", label: "Profile", icon: User, href: "/dashboard/settings/profile" },
   { id: "preferences", label: "Preferences", icon: Sliders, href: "/dashboard/settings/preferences" },
   { id: "help", label: "Help & Support", icon: HelpCircle, href: "/dashboard/settings/help" },
