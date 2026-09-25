@@ -183,7 +183,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
                 className="flex flex-col overflow-hidden leading-none"
               >
                 <span className="text-sm font-bold text-slate-900 tracking-tight whitespace-nowrap">
-                  Bopha & Vuthy
+                  SAMBATH
                   <Sparkles className="h-3 w-3 text-blue-500 inline-block ml-1" />
                 </span>
                 <span className="text-[10px] text-slate-500 tracking-wide whitespace-nowrap">
